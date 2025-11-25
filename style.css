@@ -1,0 +1,40 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+img{
+    max-width: 100%;
+}
+main{
+    background-image: url(./img/fondo_bomberman.png);
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+    height: 100vh;
+}
+#titulo{
+    text-align: center;
+    font-size: 2rem;
+}
+#juego{
+    height: 60%;
+}
+#opciones{
+    text-align: center;
+}
+#campoMinas{
+    display: grid;
+    gap: 1px;
+    width: 500px;
+    height: 500px;
+    margin: 20px auto;
+    background-color: lightslategray;
+}
+.grid-item{
+    border: 1px solid black;
+    background-color: lightgray;
+    text-align: center;
+    align-content: center;
+}
