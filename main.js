@@ -38,6 +38,8 @@ function crearTablero(e){
                 tableroJuego[i][j] = "X";
                 celda = document.createElement("div");
                 celda.classList.add("grid-item");
+                celda.dataset.row = i;
+                celda.dataset.col = j;
                 celda.textContent = numColumna + "" + numFila;
                 celda.addEventListener("click", descubrirCasilla);
                 numFila++;
@@ -57,8 +59,8 @@ function crearTablero(e){
 }
 
 function descubrirCasilla(e){
-    let celdaF = e.currentTarget.textContent[0];
-    let celdaC = e.currentTarget.textContent[1];
+    let celdaF = e.currentTarget.dataset.row;
+    let celdaC = e.currentTarget.dataset.col;
     if(tablero[celdaF][celdaC] === "*"){
         alert("¡Has perdido!");
         vivo = false;
@@ -71,8 +73,8 @@ function descubrirCasilla(e){
         e.currentTarget.style.color = "white";
         e.currentTarget.style.backgroundColor = "black";
         if (tablero[celdaF][celdaC] === 0) {
-            for (i = -1; i <= 1; i++) {
-                if ((celda.textContent == ij) >= 0 && (celda.textContent == ij) < tamaño) {
+            for (let i = -1; i <= 1; i++) {
+                if ((celda.textContent == ij) + i >= 0 && (celda.textContent == ij) +1 < tamaño) {
                     for (j = -1; j <= 1; j++) {
                         if (e.currentTarget.textContent[1] + j >= 0 && e.currentTarget.textContent[1] + j < tamaño) {
                             if (tableroJuego[e.currentTarget.textContent[0] + i][e.currentTarget.textContent[1] + j] === "X") {
