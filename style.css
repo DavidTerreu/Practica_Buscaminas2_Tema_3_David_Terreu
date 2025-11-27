@@ -30,7 +30,8 @@ main{
     width: 500px;
     height: 500px;
     margin: 20px auto;
-    background-color: lightslategray;
+    background-image: url(./img/logo\ buscaminas);
+    background-size: cover;
 }
 .grid-item{
     border: 1px solid black;
