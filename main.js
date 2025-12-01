@@ -1,14 +1,13 @@
 'use strict';
 
 //Creación variables
-let tamaño = 0, numMinas = 0, minaF = 0, minaC = 0, vivo = true, numCasillas = 0, cont = 0, intentos = 0, botonJuego = null;
+let tamaño = 0, numMinas = 0, minaF = 0, minaC = 0, vivo = true, numCasillas = 0, cont = 0, intentos = 0;
 let button = document.querySelector("button");
 let campoMinas = document.getElementById("campoMinas");
+let contenedorOpciones = document.getElementById("opciones");
 let celda = null;
 let tablero = [];
 let tableroJuego = [];
-let numFila = 0;
-let numColumna = 0;
 
 do{
     button.addEventListener("click", crearTablero);
@@ -32,10 +31,6 @@ function crearTablero(e){
     colocarMinas(numMinas);
 
     function generarTableroJuego(tamaño) {
-        /*tableroJuego = [];
-        campoMinas.textContent = "";
-        numFila = 0;
-        numColumna = 0;*/
 
         for (let i = 0; i < tamaño; i++) {
             tableroJuego[i] = [];
@@ -79,6 +74,8 @@ function descubrirCasilla(e){
         }
 
         showEndUI("lose", "¡BOOM! Has perdido", "./img/gameover.gif");
+        /*contenedorOpciones.appendChild(button);
+        button.addEventListener("click", crearTablero);*/
         return;
     }
 
@@ -158,6 +155,5 @@ function showEndUI(type, text, gifSrc) {
     gifDiv.innerHTML = `<img src="${gifSrc}" alt="${type}">`;
     // bloquear interacciones con el tablero y el botón de nuevo juego
     campoMinas.style.pointerEvents = "none";
-    if (button) button.disabled = true;
 }
 
