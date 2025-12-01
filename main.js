@@ -38,8 +38,8 @@ function crearTablero(e){
                 tableroJuego[i][j] = "X";
                 celda = document.createElement("div");
                 celda.classList.add("grid-item");
-                celda.dataset.row = i;
-                celda.dataset.col = j;
+                celda.dataset.row = f;
+                celda.dataset.col = c;
                 celda.textContent = numColumna + "" + numFila;
                 celda.addEventListener("click", descubrirCasilla);
                 numFila++;
