@@ -32,21 +32,21 @@ function crearTablero(e){
     colocarMinas(numMinas);
 
     function generarTableroJuego(tamaño) {
+        /*tableroJuego = [];
+        campoMinas.textContent = "";
+        numFila = 0;
+        numColumna = 0;*/
+
         for (let i = 0; i < tamaño; i++) {
             tableroJuego[i] = [];
             for (let j = 0; j < tamaño; j++) {
                 tableroJuego[i][j] = "X";
                 celda = document.createElement("div");
                 celda.classList.add("grid-item");
-                celda.dataset.row = f;
-                celda.dataset.col = c;
-                celda.textContent = numColumna + "" + numFila;
+                celda.dataset.row = i;
+                celda.dataset.col = j;
+                celda.textContent = "";
                 celda.addEventListener("click", descubrirCasilla);
-                numFila++;
-                if (numFila == tamaño) {
-                    numFila = 0;
-                    numColumna++;
-                }
                 campoMinas.appendChild(celda);
             }
         }
@@ -59,8 +59,9 @@ function crearTablero(e){
 }
 
 function descubrirCasilla(e){
-    let celdaF = e.currentTarget.dataset.row;
-    let celdaC = e.currentTarget.dataset.col;
+    let celdaF = parseInt(e.currentTarget.dataset.row);
+    let celdaC = parseInt(e.currentTarget.dataset.col);
+
     if(tablero[celdaF][celdaC] === "*"){
         alert("¡Has perdido!");
         vivo = false;
@@ -68,7 +69,8 @@ function descubrirCasilla(e){
         campoMinas.style.backgroundImage = "url(./img/gameover.gif)";
         campoMinas.style.backgroundSize = "cover";
         campoMinas.style.backgroundPosition = "center";
-    } else {
+        return;
+    }/*else {
         e.currentTarget.textContent = tablero[celdaF][celdaC];
         e.currentTarget.style.color = "white";
         e.currentTarget.style.backgroundColor = "black";
@@ -86,7 +88,42 @@ function descubrirCasilla(e){
                 }
             }
         }
+    }*/
+    function revelar(fil, col) {
+        if (fil < 0 || fil >= tamaño || col < 0 || col >= tamaño) return;
+        if (tableroJuego[fil][col] !== "X") return; // ya revelada
+
+        tableroJuego[fil][col] = tablero[fil][col];
+        cont++;
+
+        if (cont >= (numCasillas - numMinas)) {
+            vivo = false;
+            alert("¡Has ganado!");
+            campoMinas.textContent = "";
+            campoMinas.style.backgroundImage = "url(./img/victoria.gif)";
+            campoMinas.style.backgroundSize = "cover";
+            campoMinas.style.backgroundPosition = "center";
+            return;
+        }
+
+        const cel = campoMinas.querySelector(`[data-row="${fil}"][data-col="${col}"]`);
+        if (cel) {
+            cel.textContent = tablero[fil][col] === 0 ? "" : tablero[fil][col];
+            cel.style.color = "white";
+            cel.style.backgroundColor = "black";
+        }
+
+        // si es cero, revelar vecinos recursivamente
+        if (tablero[fil][col] === 0) {
+        for (let recurFil = -1; recurFil <= 1; recurFil++) {
+            for (let recurCol = -1; recurCol <= 1; recurCol++) {
+                if (recurFil === 0 && recurCol === 0) continue;
+                revelar(fil + recurFil, col + recurCol);
+            }
+        }
+}
     }
+    revelar(celdaF, celdaC);
 }
 
 function colocarMinas(numMinas) {
