@@ -55,7 +55,7 @@ function crearTablero(e){
     generarTableroJuego(tamaño);
 
     campoMinas.style.backgroundImage = "url(./img/cuadrado.png)";
-    button.disabled = true;
+    button.remove();
 }
 
 function descubrirCasilla(e){
@@ -65,30 +65,23 @@ function descubrirCasilla(e){
     if(tablero[celdaF][celdaC] === "*"){
         alert("¡Has perdido!");
         vivo = false;
-        campoMinas.textContent = "";
-        campoMinas.style.backgroundImage = "url(./img/gameover.gif)";
-        campoMinas.style.backgroundSize = "cover";
-        campoMinas.style.backgroundPosition = "center";
-        return;
-    }/*else {
-        e.currentTarget.textContent = tablero[celdaF][celdaC];
-        e.currentTarget.style.color = "white";
-        e.currentTarget.style.backgroundColor = "black";
-        if (tablero[celdaF][celdaC] === 0) {
-            for (let i = -1; i <= 1; i++) {
-                if ((celda.textContent == ij) + i >= 0 && (celda.textContent == ij) +1 < tamaño) {
-                    for (j = -1; j <= 1; j++) {
-                        if (e.currentTarget.textContent[1] + j >= 0 && e.currentTarget.textContent[1] + j < tamaño) {
-                            if (tableroJuego[e.currentTarget.textContent[0] + i][e.currentTarget.textContent[1] + j] === "X") {
-                                tableroJuego[e.currentTarget.textContent[0] + i][e.currentTarget.textContent[1] + j] = tablero[e.currentTarget.textContent[0] + i][e.currentTarget.textContent[1] + j];
-                                cont++;
-                            }
-                        }
+
+        for (let r = 0; r < tamaño; r++) {
+            for (let c = 0; c < tamaño; c++) {
+                if (tablero[r][c] === "*") {
+                    const cel = campoMinas.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+                    if (cel) {
+                        cel.textContent = "💣";
+                        cel.style.backgroundColor = "red";
                     }
                 }
             }
         }
-    }*/
+
+        showEndUI("lose", "¡BOOM! Has perdido", "./img/gameover.gif");
+        return;
+    }
+
     function revelar(fil, col) {
         if (fil < 0 || fil >= tamaño || col < 0 || col >= tamaño) return;
         if (tableroJuego[fil][col] !== "X") return; // ya revelada
@@ -96,21 +89,31 @@ function descubrirCasilla(e){
         tableroJuego[fil][col] = tablero[fil][col];
         cont++;
 
-        if (cont >= (numCasillas - numMinas)) {
-            vivo = false;
-            alert("¡Has ganado!");
-            campoMinas.textContent = "";
-            campoMinas.style.backgroundImage = "url(./img/victoria.gif)";
-            campoMinas.style.backgroundSize = "cover";
-            campoMinas.style.backgroundPosition = "center";
-            return;
-        }
-
         const cel = campoMinas.querySelector(`[data-row="${fil}"][data-col="${col}"]`);
         if (cel) {
             cel.textContent = tablero[fil][col] === 0 ? "" : tablero[fil][col];
             cel.style.color = "white";
             cel.style.backgroundColor = "black";
+        }
+
+        if (cont >= (numCasillas - numMinas)) {
+            alert("¡Has ganado!");
+            vivo = false;
+
+            for (let r = 0; r < tamaño; r++) {
+                for (let c = 0; c < tamaño; c++) {
+                    if (tablero[r][c] === "*") {
+                        const cel = campoMinas.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+                        if (cel) {
+                            cel.textContent = "💣";
+                            cel.style.backgroundColor = "green";
+                        }
+                    }
+                }
+            }
+
+            showEndUI("win", "¡Has ganado!", "./img/victoria.gif");
+            return;
         }
 
         // si es cero, revelar vecinos recursivamente
@@ -147,5 +150,14 @@ function colocarMinas(numMinas) {
             }
         }
     }
+}
+
+function showEndUI(type, text, gifSrc) {
+    const gifDiv = document.getElementById("gif");
+    // mostrar gif a la izquierda (o donde esté el div)
+    gifDiv.innerHTML = `<img src="${gifSrc}" alt="${type}">`;
+    // bloquear interacciones con el tablero y el botón de nuevo juego
+    campoMinas.style.pointerEvents = "none";
+    if (button) button.disabled = true;
 }
 
