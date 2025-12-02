@@ -21,20 +21,20 @@ function crearTablero(e){
     campoMinas.style.gridTemplateColumns = `repeat(${tamaño}, 1fr)`;
     campoMinas.style.gridTemplateRows = `repeat(${tamaño}, 1fr)`;
 
-    for (let i = 0; i < tamaño; i++) {
+    for (let i = 0; i < tamaño; i++){
         tablero[i] = [];
-        for (let j = 0; j < tamaño; j++) {
+        for (let j = 0; j < tamaño; j++){
             tablero[i][j] = 0;
         }
     }
 
     colocarMinas(numMinas);
 
-    function generarTableroJuego(tamaño) {
+    function generarTableroJuego(tamaño){
 
-        for (let i = 0; i < tamaño; i++) {
+        for (let i = 0; i < tamaño; i++){
             tableroJuego[i] = [];
-            for (let j = 0; j < tamaño; j++) {
+            for (let j = 0; j < tamaño; j++){
                 tableroJuego[i][j] = "X";
                 celda = document.createElement("div");
                 celda.classList.add("grid-item");
@@ -42,6 +42,8 @@ function crearTablero(e){
                 celda.dataset.col = j;
                 celda.textContent = "";
                 celda.addEventListener("click", descubrirCasilla);
+                celda.addEventListener("contextmenu", ponerBandera);
+                celda.addEventListener("dblclick", quitarBandera);
                 campoMinas.appendChild(celda);
             }
         }
@@ -57,13 +59,15 @@ function descubrirCasilla(e){
     let celdaF = parseInt(e.currentTarget.dataset.row);
     let celdaC = parseInt(e.currentTarget.dataset.col);
 
+    if (tableroJuego[celdaF][celdaC] === "F") return;
+
     if(tablero[celdaF][celdaC] === "*"){
         alert("¡Has perdido!");
         vivo = false;
 
-        for (let r = 0; r < tamaño; r++) {
-            for (let c = 0; c < tamaño; c++) {
-                if (tablero[r][c] === "*") {
+        for (let r = 0; r < tamaño; r++){
+            for (let c = 0; c < tamaño; c++){
+                if (tablero[r][c] === "*"){
                     const cel = campoMinas.querySelector(`[data-row="${r}"][data-col="${c}"]`);
                     if (cel) {
                         cel.textContent = "💣";
@@ -79,7 +83,7 @@ function descubrirCasilla(e){
         return;
     }
 
-    function revelar(fil, col) {
+    function revelar(fil, col){
         if (fil < 0 || fil >= tamaño || col < 0 || col >= tamaño) return;
         if (tableroJuego[fil][col] !== "X") return; // ya revelada
 
@@ -87,21 +91,21 @@ function descubrirCasilla(e){
         cont++;
 
         const cel = campoMinas.querySelector(`[data-row="${fil}"][data-col="${col}"]`);
-        if (cel) {
+        if (cel){
             cel.textContent = tablero[fil][col] === 0 ? "" : tablero[fil][col];
             cel.style.color = "white";
             cel.style.backgroundColor = "black";
         }
 
-        if (cont >= (numCasillas - numMinas)) {
+        if (cont >= (numCasillas - numMinas)){
             alert("¡Has ganado!");
             vivo = false;
 
             for (let r = 0; r < tamaño; r++) {
-                for (let c = 0; c < tamaño; c++) {
-                    if (tablero[r][c] === "*") {
+                for (let c = 0; c < tamaño; c++){
+                    if (tablero[r][c] === "*"){
                         const cel = campoMinas.querySelector(`[data-row="${r}"][data-col="${c}"]`);
-                        if (cel) {
+                        if (cel){
                             cel.textContent = "💣";
                             cel.style.backgroundColor = "green";
                         }
@@ -114,9 +118,9 @@ function descubrirCasilla(e){
         }
 
         // si es cero, revelar vecinos recursivamente
-        if (tablero[fil][col] === 0) {
-        for (let recurFil = -1; recurFil <= 1; recurFil++) {
-            for (let recurCol = -1; recurCol <= 1; recurCol++) {
+        if (tablero[fil][col] === 0){
+        for (let recurFil = -1; recurFil <= 1; recurFil++){
+            for (let recurCol = -1; recurCol <= 1; recurCol++){
                 if (recurFil === 0 && recurCol === 0) continue;
                 revelar(fil + recurFil, col + recurCol);
             }
@@ -126,19 +130,19 @@ function descubrirCasilla(e){
     revelar(celdaF, celdaC);
 }
 
-function colocarMinas(numMinas) {
-    for (let i = 0; i < numMinas; i++) {
+function colocarMinas(numMinas){
+    for (let i = 0; i < numMinas; i++){
         minaF = Math.floor(Math.random() * tamaño);
         minaC = Math.floor(Math.random() * tamaño);
-        if (tablero[minaF][minaC] === "*") {
+        if (tablero[minaF][minaC] === "*"){
             i--;
-        } else {
+        } else{
             tablero[minaF][minaC] = "*";
-            for (let j = -1; j <= 1; j++) {
-                if (minaF + j >= 0 && minaF + j < tamaño) {
+            for (let j = -1; j <= 1; j++){
+                if (minaF + j >= 0 && minaF + j < tamaño){
                     for (let k = -1; k <= 1; k++) {
-                        if (minaC + k >= 0 && minaC + k < tamaño) {
-                            if (tablero[minaF + j][minaC + k] !== "*") {
+                        if (minaC + k >= 0 && minaC + k < tamaño){
+                            if (tablero[minaF + j][minaC + k] !== "*"){
                                 tablero[minaF + j][minaC + k]++;
                             }
                         }
@@ -149,11 +153,35 @@ function colocarMinas(numMinas) {
     }
 }
 
-function showEndUI(type, text, gifSrc) {
+function showEndUI(type, text, gifSrc){
     const gifDiv = document.getElementById("gif");
     // mostrar gif a la izquierda (o donde esté el div)
     gifDiv.innerHTML = `<img src="${gifSrc}" alt="${type}">`;
     // bloquear interacciones con el tablero y el botón de nuevo juego
     campoMinas.style.pointerEvents = "none";
+}
+
+function ponerBandera(e){
+    e.preventDefault();
+    const celdaF = parseInt(e.currentTarget.dataset.row);
+    const celdaC = parseInt(e.currentTarget.dataset.col);
+    const cel = campoMinas.querySelector(`[data-row="${celdaF}"][data-col="${celdaC}"]`);
+    
+    if (tableroJuego[celdaF][celdaC] === "X") {
+        tableroJuego[celdaF][celdaC] = "F";
+        cel.textContent = "🚩";
+    }
+}
+
+function quitarBandera(e){
+    e.preventDefault();
+    const celdaF = parseInt(e.currentTarget.dataset.row);
+    const celdaC = parseInt(e.currentTarget.dataset.col);
+    const cel = campoMinas.querySelector(`[data-row="${celdaF}"][data-col="${celdaC}"]`);
+
+    if (tableroJuego[celdaF][celdaC] === "F") {
+        tableroJuego[celdaF][celdaC] = "X";
+        cel.textContent = "";
+    }
 }
 
